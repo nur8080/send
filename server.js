@@ -1,7 +1,7 @@
-import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 import nodemailer from 'nodemailer';
+import cors from 'cors';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -9,18 +9,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS for specific frontend URL
-app.use(cors({
-    origin: 'https://5500-sayan2nd-portfolio-en65n0gqkon.ws-us117.gitpod.io', // Replace this with your actual frontend URL
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Middleware for parsing JSON
+// Middleware
 app.use(bodyParser.json());
-
-// Preflight requests handler for /send endpoint
-app.options('/send', cors()); // Allows OPTIONS requests for /send route
+app.use(cors());
 
 // Email sending route
 app.post('/send', async (req, res) => {
@@ -45,7 +36,7 @@ app.post('/send', async (req, res) => {
         await transporter.sendMail(mailOptions);
         res.status(200).json({ message: 'Message sent successfully!' });
     } catch (error) {
-        console.error('Error sending email:', error);
+        console.error(error);
         res.status(500).json({ message: 'Failed to send message.' });
     }
 });
