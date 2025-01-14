@@ -1,7 +1,7 @@
+import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 import nodemailer from 'nodemailer';
-import cors from 'cors';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -9,9 +9,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Enable CORS for all origins
+app.use(cors());
+
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
 
 // Email sending route
 app.post('/send', async (req, res) => {
@@ -23,8 +25,6 @@ app.post('/send', async (req, res) => {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
         },
-        debug: true, // Add this line
-    logger: true, // Add this line
     });
 
     const mailOptions = {
@@ -38,7 +38,7 @@ app.post('/send', async (req, res) => {
         await transporter.sendMail(mailOptions);
         res.status(200).json({ message: 'Message sent successfully!' });
     } catch (error) {
-        console.error(error);
+        console.error('Error sending email:', error);
         res.status(500).json({ message: 'Failed to send message.' });
     }
 });
