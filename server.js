@@ -9,11 +9,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS for all origins
-app.use(cors());
+// Enable CORS for specific frontend URL
+app.use(cors({
+    origin: 'https://5500-sayan2nd-portfolio-en65n0gqkon.ws-us117.gitpod.io', // Replace this with your actual frontend URL
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Middleware
+// Middleware for parsing JSON
 app.use(bodyParser.json());
+
+// Preflight requests handler for /send endpoint
+app.options('/send', cors()); // Allows OPTIONS requests for /send route
 
 // Email sending route
 app.post('/send', async (req, res) => {
